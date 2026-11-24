@@ -181,11 +181,51 @@ const JosJisComponents = {
             <div class="panel">
 
                 <button
-                    style="width:100%;background:#444;color:white;"
-                    onclick="resetGame()"
+                    class="reset-button"
+                    onclick="openResetModal()"
                 >
                     RESET GAME
                 </button>
+
+            </div>
+        `;
+    },
+
+    // CUSTOM RESET MODAL
+    resetModal() {
+        return `
+            <div class="reset-modal" id="resetModal" hidden>
+
+                <div class="reset-dialog">
+
+                    <div class="reset-icon">⚠️</div>
+
+                    <h2>Reset Game?</h2>
+
+                    <p>
+                        Are you sure you want to reset your game?
+                        All progress will be permanently lost!
+                    </p>
+
+                    <div class="reset-actions">
+
+                        <button
+                            class="cancel-button"
+                            onclick="closeResetModal()"
+                        >
+                            CANCEL
+                        </button>
+
+                        <button
+                            class="confirm-button"
+                            onclick="confirmResetGame()"
+                        >
+                            RESET
+                        </button>
+
+                    </div>
+
+                </div>
 
             </div>
         `;
@@ -203,6 +243,7 @@ const JosJisComponents = {
 
     // RENDER ALL COMPONENTS
     render() {
+
         const container = document.getElementById("app");
 
         if (!container) {
@@ -222,6 +263,8 @@ const JosJisComponents = {
                 ${this.footer()}
 
             </div>
+
+            ${this.resetModal()}
         `;
     }
 };
