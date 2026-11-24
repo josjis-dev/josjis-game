@@ -64,13 +64,13 @@ function updateDisplay() {
         Math.floor(game.best).toLocaleString();
 
     document.getElementById("powerLevel").textContent =
-        game.powerLevel;
+        "Level: " + game.powerLevel;
 
     document.getElementById("autoLevel").textContent =
-        game.autoLevel;
+        "Level: " + game.autoLevel;
 
     document.getElementById("streak").textContent =
-        game.streak;
+        "Current Streak: " + game.streak + " days";
 
     // Power upgrade button
     const powerCost = getPowerCost();
@@ -92,7 +92,6 @@ function updateDisplay() {
 
     // Daily reward button
     const today = getToday();
-
     const dailyButton = document.getElementById("dailyButton");
 
     if (game.lastDaily === today) {
@@ -135,9 +134,8 @@ document.getElementById("character").addEventListener("click", function(event) {
     saveGame();
     updateDisplay();
 
-    const message = document.getElementById("clickMessage");
-
-    message.textContent = "+" + earned + " Coins!";
+    document.getElementById("clickMessage").textContent =
+        "+" + earned + " Coins!";
 });
 
 // =====================================
@@ -150,7 +148,6 @@ function showFloatingCoins(event, earned) {
     if (!area) return;
 
     const rect = area.getBoundingClientRect();
-
     const floating = document.createElement("div");
 
     floating.className = "floating-coin";
@@ -159,7 +156,6 @@ function showFloatingCoins(event, earned) {
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
 
-    // Fallback for touch events without coordinates
     if (!event.clientX && !event.clientY) {
         const characterRect =
             document.getElementById("character").getBoundingClientRect();
@@ -256,9 +252,7 @@ function getYesterday() {
 function claimDaily() {
     const today = getToday();
 
-    if (game.lastDaily === today) {
-        return;
-    }
+    if (game.lastDaily === today) return;
 
     if (game.lastDaily === getYesterday()) {
         game.streak++;
@@ -283,16 +277,21 @@ function claimDaily() {
 }
 
 // =====================================
-// RESET GAME
+// CUSTOM RESET POPUP
 // =====================================
 
-function resetGame() {
-    const confirmReset = confirm(
-        "Are you sure you want to reset your game? All progress will be lost!"
-    );
+// Open popup
+function openResetModal() {
+    document.getElementById("resetModal").hidden = false;
+}
 
-    if (!confirmReset) return;
+// Close popup
+function closeResetModal() {
+    document.getElementById("resetModal").hidden = true;
+}
 
+// Confirm reset
+function confirmResetGame() {
     game = { ...defaultData };
 
     saveGame();
@@ -300,6 +299,8 @@ function resetGame() {
 
     document.getElementById("clickMessage").textContent = "";
     document.getElementById("dailyMessage").textContent = "";
+
+    closeResetModal();
 }
 
 // =====================================
