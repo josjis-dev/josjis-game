@@ -96,6 +96,8 @@ header p {
 .character-area {
     text-align: center;
     padding: 15px 0 5px;
+    position: relative;
+    overflow: hidden;
 }
 
 .character {
@@ -111,8 +113,11 @@ header p {
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
     transition: transform .1s;
     box-shadow: 0 0 25px #ffbd2230;
+    position: relative;
+    z-index: 1;
 }
 
 .character:active {
@@ -123,16 +128,48 @@ header p {
     width: 145px;
     height: 145px;
     object-fit: contain;
+    pointer-events: none;
 }
 
 .character span {
     font-size: 95px;
+    pointer-events: none;
 }
 
 .click-text {
     color: #ffbd22;
     font-weight: bold;
     font-size: 14px;
+}
+
+/* FLOATING COINS */
+.floating-coin {
+    position: absolute;
+    color: #ffbd22;
+    font-size: 22px;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 5;
+    animation: floatCoin .8s ease-out forwards;
+    text-shadow: 0 2px 8px #000;
+    white-space: nowrap;
+}
+
+@keyframes floatCoin {
+    0% {
+        opacity: 1;
+        transform: translate(-50%,0) scale(.8);
+    }
+
+    30% {
+        opacity: 1;
+        transform: translate(-50%,-20px) scale(1.2);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%,-90px) scale(1.4);
+    }
 }
 
 h2 {
@@ -229,7 +266,6 @@ footer {
     font-size: 11px;
     padding: 15px;
 }
-
 </style>
 </head>
 
@@ -465,12 +501,49 @@ function updateDisplay() {
 }
 
 // ===============================
+// FLOATING COINS
+// ===============================
+
+function showFloatingCoins(event, earned) {
+
+    const area = document.querySelector(".character-area");
+    const rect = area.getBoundingClientRect();
+
+    const floating = document.createElement("div");
+
+    floating.className = "floating-coin";
+    floating.textContent = "+" + earned;
+
+    // Position follows the tap location.
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+
+    // Fallback for events without pointer coordinates.
+    if (!event.clientX && !event.clientY) {
+        const characterRect =
+            document.getElementById("character").getBoundingClientRect();
+
+        x = characterRect.left + characterRect.width / 2 - rect.left;
+        y = characterRect.top - rect.top + 30;
+    }
+
+    floating.style.left = x + "px";
+    floating.style.top = y + "px";
+
+    area.appendChild(floating);
+
+    setTimeout(function() {
+        floating.remove();
+    }, 850);
+}
+
+// ===============================
 // CLICK CHARACTER
 // ===============================
 
 document.getElementById("character").addEventListener(
     "click",
-    function() {
+    function(event) {
 
         const earned = getClickPower();
 
@@ -480,6 +553,8 @@ document.getElementById("character").addEventListener(
         if (game.coins > game.best) {
             game.best = game.coins;
         }
+
+        showFloatingCoins(event, earned);
 
         document.getElementById("clickMessage").textContent =
             "+" + earned + " coins!";
