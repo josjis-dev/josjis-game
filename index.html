@@ -1,0 +1,644 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#17130a">
+<title>JosJis Clicker Game</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px 14px;
+    min-height: 100vh;
+    background: linear-gradient(145deg,#171717,#302000);
+    color: white;
+    font-family: Arial,sans-serif;
+}
+
+.container {
+    max-width: 440px;
+    margin: auto;
+}
+
+header {
+    text-align: center;
+    margin: 12px 0 25px;
+}
+
+.logo {
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 2px solid #ffbd22;
+}
+
+header h1 {
+    color: #ffbd22;
+    margin: 10px 0 5px;
+    font-size: 28px;
+}
+
+header p {
+    color: #aaa;
+    font-size: 13px;
+}
+
+.panel {
+    background: #242424;
+    border: 1px solid #57451b;
+    border-radius: 17px;
+    padding: 19px;
+    margin-bottom: 16px;
+}
+
+.score-box {
+    text-align: center;
+    background: #151515;
+    border-radius: 13px;
+    padding: 18px;
+}
+
+.small-title {
+    color: #aaa;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.coins {
+    color: #ffbd22;
+    font-size: 39px;
+    font-weight: bold;
+    margin: 8px 0;
+    overflow-wrap: anywhere;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 17px;
+    text-align: center;
+}
+
+.stat-value {
+    color: #ffbd22;
+    font-size: 21px;
+    font-weight: bold;
+    margin-top: 6px;
+}
+
+.character-area {
+    text-align: center;
+    padding: 15px 0 5px;
+}
+
+.character {
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    border: 4px solid #ffbd22;
+    background: radial-gradient(circle,#654900,#211800);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px auto 17px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .1s;
+    box-shadow: 0 0 25px #ffbd2230;
+}
+
+.character:active {
+    transform: scale(.90);
+}
+
+.character img {
+    width: 145px;
+    height: 145px;
+    object-fit: contain;
+}
+
+.character span {
+    font-size: 95px;
+}
+
+.click-text {
+    color: #ffbd22;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+h2 {
+    color: #ffbd22;
+    font-size: 18px;
+    margin: 0 0 15px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: #171717;
+    padding: 13px;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
+.item-info {
+    flex: 1;
+}
+
+.item-name {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.item-desc {
+    color: #999;
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.item-level {
+    color: #ffbd22;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+button {
+    border: none;
+    background: #d99b00;
+    color: #171717;
+    border-radius: 9px;
+    padding: 11px 13px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+button:active {
+    transform: scale(.96);
+}
+
+button:disabled {
+    background: #555;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.reward {
+    text-align: center;
+}
+
+.reward-icon {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.reward p {
+    color: #aaa;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.reward button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px;
+}
+
+.message {
+    color: #ffbd22;
+    font-size: 12px;
+    margin-top: 10px;
+    min-height: 15px;
+}
+
+footer {
+    text-align: center;
+    color: #777;
+    font-size: 11px;
+    padding: 15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <img
+        class="logo"
+        src="../assets/images/josjis-logo-circle.png"
+        alt="JosJis Logo"
+        onerror="this.style.display='none'"
+    >
+    <h1>JosJis Clicker</h1>
+    <p>Click • Collect • Upgrade • Have Fun!</p>
+</header>
+
+<!-- SCORE -->
+<div class="panel">
+
+    <div class="score-box">
+        <div class="small-title">YOUR COINS</div>
+        <div class="coins" id="coins">0</div>
+        <div class="small-title">JOSJIS GAME COINS</div>
+    </div>
+
+    <div class="stats">
+        <div>
+            <div class="small-title">PER CLICK</div>
+            <div class="stat-value" id="perClick">1</div>
+        </div>
+
+        <div>
+            <div class="small-title">TOTAL CLICKS</div>
+            <div class="stat-value" id="totalClicks">0</div>
+        </div>
+
+        <div>
+            <div class="small-title">BEST COINS</div>
+            <div class="stat-value" id="bestCoins">0</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- CLICK CHARACTER -->
+<div class="panel character-area">
+
+    <div class="small-title">TAP TO COLLECT COINS</div>
+
+    <div class="character" id="character">
+        <img
+            src="../assets/images/josjis-logo-circle.png"
+            alt="JosJis"
+            onerror="this.outerHTML='<span>🐶</span>'"
+        >
+    </div>
+
+    <div class="click-text">
+        TAP JOSJIS TO EARN COINS!
+    </div>
+
+    <div class="message" id="clickMessage"></div>
+
+</div>
+
+<!-- UPGRADE SHOP -->
+<div class="panel">
+
+    <h2>🛒 Upgrade Shop</h2>
+
+    <div class="item">
+        <div class="item-info">
+            <div class="item-name">⚡ Power Click</div>
+            <div class="item-desc">Increase coins earned per click.</div>
+            <div class="item-level" id="powerLevel">Level: 0</div>
+        </div>
+
+        <button id="powerButton" onclick="buyPower()">
+            Buy 50
+        </button>
+    </div>
+
+    <div class="item">
+        <div class="item-info">
+            <div class="item-name">🤖 Auto Clicker</div>
+            <div class="item-desc">Automatically collect coins every second.</div>
+            <div class="item-level" id="autoLevel">Level: 0</div>
+        </div>
+
+        <button id="autoButton" onclick="buyAuto()">
+            Buy 150
+        </button>
+    </div>
+
+</div>
+
+<!-- DAILY REWARD -->
+<div class="panel reward">
+
+    <h2>🎁 Daily Rewards</h2>
+
+    <div class="reward-icon">🎁</div>
+
+    <p>
+        Come back every day and collect your daily coins!
+        Consecutive visits increase your reward.
+    </p>
+
+    <div class="small-title" id="streak">
+        Current Streak: 0 days
+    </div>
+
+    <button id="dailyButton" onclick="claimDaily()">
+        CLAIM DAILY REWARD
+    </button>
+
+    <div class="message" id="dailyMessage"></div>
+
+</div>
+
+<!-- RESET -->
+<div class="panel">
+    <button
+        style="width:100%;background:#444;color:white;"
+        onclick="resetGame()">
+        RESET GAME
+    </button>
+</div>
+
+<footer>
+    JosJis Clicker Game<br>
+    © 2026 JosJis. All Rights Reserved.
+</footer>
+
+</div>
+
+<script>
+
+// ===============================
+// GAME DATA
+// ===============================
+
+const defaultData = {
+    coins: 0,
+    clicks: 0,
+    best: 0,
+    powerLevel: 0,
+    autoLevel: 0,
+    lastDaily: "",
+    streak: 0
+};
+
+let game;
+
+try {
+    game = {
+        ...defaultData,
+        ...JSON.parse(localStorage.getItem("josjis_clicker_v2"))
+    };
+} catch (e) {
+    game = {...defaultData};
+}
+
+// ===============================
+// SAVE GAME
+// ===============================
+
+function saveGame() {
+    localStorage.setItem(
+        "josjis_clicker_v2",
+        JSON.stringify(game)
+    );
+}
+
+// ===============================
+// GAME CALCULATIONS
+// ===============================
+
+function getClickPower() {
+    return 1 + game.powerLevel;
+}
+
+function getPowerCost() {
+    return Math.floor(50 * Math.pow(1.7, game.powerLevel));
+}
+
+function getAutoCost() {
+    return Math.floor(150 * Math.pow(1.8, game.autoLevel));
+}
+
+// ===============================
+// UPDATE DISPLAY
+// ===============================
+
+function updateDisplay() {
+
+    document.getElementById("coins").textContent =
+        Math.floor(game.coins).toLocaleString();
+
+    document.getElementById("perClick").textContent =
+        getClickPower().toLocaleString();
+
+    document.getElementById("totalClicks").textContent =
+        game.clicks.toLocaleString();
+
+    document.getElementById("bestCoins").textContent =
+        Math.floor(game.best).toLocaleString();
+
+    document.getElementById("powerLevel").textContent =
+        "Level: " + game.powerLevel;
+
+    document.getElementById("autoLevel").textContent =
+        "Level: " + game.autoLevel;
+
+    document.getElementById("powerButton").textContent =
+        "Buy " + getPowerCost().toLocaleString();
+
+    document.getElementById("autoButton").textContent =
+        "Buy " + getAutoCost().toLocaleString();
+
+    document.getElementById("powerButton").disabled =
+        game.coins < getPowerCost();
+
+    document.getElementById("autoButton").disabled =
+        game.coins < getAutoCost();
+
+    document.getElementById("streak").textContent =
+        "Current Streak: " + game.streak + " days";
+
+    updateDailyButton();
+}
+
+// ===============================
+// CLICK CHARACTER
+// ===============================
+
+document.getElementById("character").addEventListener(
+    "click",
+    function() {
+
+        const earned = getClickPower();
+
+        game.coins += earned;
+        game.clicks++;
+
+        if (game.coins > game.best) {
+            game.best = game.coins;
+        }
+
+        document.getElementById("clickMessage").textContent =
+            "+" + earned + " coins!";
+
+        saveGame();
+        updateDisplay();
+
+    }
+);
+
+// ===============================
+// POWER UPGRADE
+// ===============================
+
+function buyPower() {
+
+    const cost = getPowerCost();
+
+    if (game.coins < cost) return;
+
+    game.coins -= cost;
+    game.powerLevel++;
+
+    saveGame();
+    updateDisplay();
+}
+
+// ===============================
+// AUTO CLICKER
+// ===============================
+
+function buyAuto() {
+
+    const cost = getAutoCost();
+
+    if (game.coins < cost) return;
+
+    game.coins -= cost;
+    game.autoLevel++;
+
+    saveGame();
+    updateDisplay();
+}
+
+// Earn coins automatically every second.
+setInterval(function() {
+
+    if (game.autoLevel > 0) {
+
+        game.coins += game.autoLevel;
+
+        if (game.coins > game.best) {
+            game.best = game.coins;
+        }
+
+        saveGame();
+        updateDisplay();
+    }
+
+}, 1000);
+
+// ===============================
+// DAILY REWARD
+// ===============================
+
+function getToday() {
+    const d = new Date();
+
+    return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+    ].join("-");
+}
+
+function getYesterday() {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+
+    return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+    ].join("-");
+}
+
+function updateDailyButton() {
+
+    const claimed = game.lastDaily === getToday();
+
+    const button = document.getElementById("dailyButton");
+
+    button.disabled = claimed;
+
+    button.textContent = claimed
+        ? "ALREADY CLAIMED TODAY"
+        : "CLAIM DAILY REWARD";
+}
+
+function claimDaily() {
+
+    const today = getToday();
+
+    if (game.lastDaily === today) {
+        return;
+    }
+
+    if (game.lastDaily === getYesterday()) {
+        game.streak++;
+    } else {
+        game.streak = 1;
+    }
+
+    // Reward starts at 100 and increases by 50 per streak day.
+    const reward = 100 + (game.streak - 1) * 50;
+
+    game.coins += reward;
+    game.lastDaily = today;
+
+    if (game.coins > game.best) {
+        game.best = game.coins;
+    }
+
+    document.getElementById("dailyMessage").textContent =
+        "Congratulations! You received " +
+        reward.toLocaleString() + " coins!";
+
+    saveGame();
+    updateDisplay();
+}
+
+// ===============================
+// RESET GAME
+// ===============================
+
+function resetGame() {
+
+    const confirmReset = confirm(
+        "Are you sure? All game progress will be deleted!"
+    );
+
+    if (!confirmReset) return;
+
+    game = {...defaultData};
+
+    saveGame();
+    updateDisplay();
+
+    document.getElementById("dailyMessage").textContent = "";
+    document.getElementById("clickMessage").textContent = "";
+}
+
+// ===============================
+// START GAME
+// ===============================
+
+updateDisplay();
+
+</script>
+
+</body>
+</html>
