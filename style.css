@@ -202,6 +202,7 @@ h2 {
     margin-top: 5px;
 }
 
+/* GENERAL BUTTON */
 button {
     border: none;
     background: #d99b00;
@@ -224,6 +225,7 @@ button:disabled {
     cursor: not-allowed;
 }
 
+/* DAILY REWARDS */
 .reward {
     text-align: center;
 }
@@ -252,6 +254,7 @@ button:disabled {
     min-height: 15px;
 }
 
+/* FOOTER */
 footer {
     text-align: center;
     color: #777;
@@ -266,47 +269,74 @@ footer {
     color: white;
 }
 
-/* CUSTOM RESET POPUP */
-.reset-modal[hidden] {
+/* =====================================
+   CUSTOM RESET POPUP
+===================================== */
+
+/* Hide popup when closed */
+#resetModal[hidden] {
     display: none !important;
 }
 
-.reset-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Popup overlay */
+#resetModal:not([hidden]) {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+
+    width: 100vw !important;
+    height: 100vh !important;
+
+    z-index: 99999 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
     padding: 20px;
+
     background: rgba(0,0,0,.82);
+
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
+
     animation: modalFade .2s ease;
 }
 
+/* Popup box */
 .reset-dialog {
     width: 100%;
     max-width: 380px;
+
     padding: 28px 22px;
+
     text-align: center;
+
     background: #17130a;
+
     border: 1px solid #a87916;
     border-radius: 22px;
+
     box-shadow: 0 15px 50px rgba(0,0,0,.6);
+
     animation: modalScale .25s ease;
 }
 
+/* Warning icon */
 .reset-icon {
     font-size: 42px;
     margin-bottom: 12px;
 }
 
+/* Popup title */
 .reset-dialog h2 {
     color: #ffbd22;
     margin: 0 0 12px;
 }
 
+/* Popup description */
 .reset-dialog p {
     color: #ccc;
     font-size: 14px;
@@ -314,48 +344,57 @@ footer {
     margin-bottom: 25px;
 }
 
+/* Popup buttons container */
 .reset-actions {
     display: flex;
     gap: 12px;
 }
 
+/* Popup buttons */
 .reset-actions button {
     flex: 1;
     padding: 14px 8px;
-    border: 0;
+    border: none;
     border-radius: 10px;
     font-weight: bold;
     cursor: pointer;
 }
 
+/* Cancel button */
 .cancel-button {
-    background: #333;
-    color: white;
+    background: #333 !important;
+    color: white !important;
 }
 
+/* Confirm button */
 .confirm-button {
-    background: linear-gradient(135deg,#ffbd22,#d18a00);
-    color: #17130a;
+    background: linear-gradient(135deg,#ffbd22,#d18a00) !important;
+    color: #17130a !important;
 }
 
+/* Popup button animation */
 .reset-actions button:active {
     transform: scale(.96);
 }
 
+/* Popup fade animation */
 @keyframes modalFade {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
 }
 
+/* Popup scale animation */
 @keyframes modalScale {
     from {
         opacity: 0;
         transform: scale(.85);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
