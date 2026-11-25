@@ -1,7 +1,7 @@
 
 /* =====================================
    JOSJIS CLICKER GAME
-   JavaScript
+   JavaScript + PAGE NAVIGATION
 ===================================== */
 
 // Default game data
@@ -99,6 +99,57 @@ function loadGame() {
 
 function saveGame() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(game));
+}
+
+// =====================================
+// PAGE NAVIGATION
+// =====================================
+
+function showPage(pageName) {
+
+    const validPages = [
+        "home",
+        "missions",
+        "awards",
+        "shop",
+        "profile"
+    ];
+
+    if (!validPages.includes(pageName)) {
+        return;
+    }
+
+    // Hide all pages
+    document.querySelectorAll(".game-page").forEach(function(page) {
+        page.hidden = true;
+        page.classList.remove("active");
+    });
+
+    // Show selected page
+    const selectedPage = document.getElementById(
+        "page-" + pageName
+    );
+
+    if (!selectedPage) return;
+
+    selectedPage.hidden = false;
+    selectedPage.classList.add("active");
+
+    // Update active navigation button
+    document.querySelectorAll(".nav-button").forEach(function(button) {
+
+        button.classList.toggle(
+            "active",
+            button.dataset.page === pageName
+        );
+
+    });
+
+    // Return to top when changing page
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
 
 // =====================================
@@ -269,15 +320,14 @@ document.getElementById("character").addEventListener("click", function(event) {
 
     showFloatingCoins(event, earned);
 
-    checkAchievements();
+    const unlocked = checkAchievements();
 
     saveGame();
     updateDisplay();
 
     document.getElementById("clickMessage").textContent =
-        game.achievements.firstClick &&
-        game.clicks === 1
-            ? "🏆 First Click unlocked!"
+        unlocked
+            ? "🏆 Achievement unlocked! Bonus coins received!"
             : "+" + earned + " Coins!";
 });
 
@@ -469,6 +519,9 @@ function confirmResetGame() {
     document.getElementById("dailyMessage").textContent = "";
 
     closeResetModal();
+
+    // Return to Home after reset
+    showPage("home");
 }
 
 // =====================================
@@ -478,3 +531,6 @@ function confirmResetGame() {
 checkAchievements();
 saveGame();
 updateDisplay();
+
+// Start on Home page
+showPage("home");
