@@ -5,7 +5,7 @@
 
 body {
     margin: 0;
-    padding: 20px 14px;
+    padding: 20px 14px 100px;
     min-height: 100vh;
     background: linear-gradient(145deg,#171717,#302000);
     color: white;
@@ -226,6 +226,101 @@ button:disabled {
 }
 
 /* =====================================
+   PAGE NAVIGATION
+===================================== */
+
+.game-page[hidden] {
+    display: none !important;
+}
+
+.game-page {
+    display: block;
+    animation: pageFade .2s ease;
+}
+
+@keyframes pageFade {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =====================================
+   BOTTOM NAVIGATION
+===================================== */
+
+.bottom-nav {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+
+    width: 100%;
+    max-width: 468px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 3px;
+
+    padding: 9px 7px;
+    padding-bottom: calc(9px + env(safe-area-inset-bottom));
+
+    background: rgba(20,20,20,.97);
+    border-top: 1px solid #57451b;
+
+    box-shadow: 0 -5px 20px rgba(0,0,0,.35);
+
+    z-index: 1000;
+}
+
+.nav-button {
+    flex: 1;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    padding: 8px 2px;
+
+    background: transparent !important;
+    color: #888 !important;
+
+    border: none;
+    border-radius: 10px;
+
+    font-size: 10px;
+    font-weight: bold;
+
+    white-space: normal;
+    transition: .2s ease;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+.nav-icon {
+    font-size: 21px;
+    line-height: 1;
+}
+
+.nav-button.active {
+    color: #ffbd22 !important;
+    background: #ffbd2215 !important;
+}
+
+.nav-button:active {
+    transform: scale(.92);
+}
+
+/* =====================================
    ACHIEVEMENTS
 ===================================== */
 
@@ -344,6 +439,31 @@ button:disabled {
     font-size: 12px;
     margin-top: 10px;
     min-height: 15px;
+}
+
+/* PROFILE */
+.profile-info {
+    text-align: center;
+    padding: 10px 0 20px;
+}
+
+.profile-info h3 {
+    color: #ffbd22;
+    margin: 8px 0;
+}
+
+.profile-info p,
+.profile-note p {
+    color: #aaa;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.profile-note {
+    background: #171717;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 15px;
 }
 
 /* FOOTER */
@@ -478,5 +598,26 @@ footer {
     to {
         opacity: 1;
         transform: scale(1);
+    }
+}
+
+/* SMALL SCREEN */
+@media (max-width: 360px) {
+    .nav-button {
+        font-size: 9px;
+    }
+
+    .nav-icon {
+        font-size: 19px;
+    }
+
+    .character {
+        width: 165px;
+        height: 165px;
+    }
+
+    .character img {
+        width: 125px;
+        height: 125px;
     }
 }
