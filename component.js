@@ -1,7 +1,7 @@
 
 /* =====================================
    JOSJIS CLICKER
-   UI COMPONENTS
+   UI COMPONENTS + NAVIGATION
 ===================================== */
 
 const JosJisComponents = {
@@ -266,10 +266,36 @@ const JosJisComponents = {
         `;
     },
 
-    // RESET BUTTON
-    reset() {
+    // PROFILE
+    profile() {
         return `
             <div class="panel">
+
+                <h2>👤 Player Profile</h2>
+
+                <div class="profile-info">
+                    <div class="reward-icon">🐶</div>
+
+                    <h3>JosJis Player</h3>
+
+                    <p>
+                        Welcome to the JosJis Clicker community!
+                    </p>
+                </div>
+
+                <div class="profile-note">
+                    <div class="small-title">GAME INFORMATION</div>
+
+                    <p>
+                        JosJis Clicker is a casual virtual coin
+                        collection game.
+                    </p>
+
+                    <p>
+                        Game coins have no monetary value and
+                        cannot be exchanged for JJS tokens.
+                    </p>
+                </div>
 
                 <button
                     class="reset-button"
@@ -279,6 +305,60 @@ const JosJisComponents = {
                 </button>
 
             </div>
+        `;
+    },
+
+    // BOTTOM NAVIGATION
+    navigation() {
+        return `
+            <nav class="bottom-nav" id="bottomNav">
+
+                <button
+                    class="nav-button active"
+                    data-page="home"
+                    onclick="showPage('home')"
+                >
+                    <span class="nav-icon">🏠</span>
+                    <span>Home</span>
+                </button>
+
+                <button
+                    class="nav-button"
+                    data-page="missions"
+                    onclick="showPage('missions')"
+                >
+                    <span class="nav-icon">🎯</span>
+                    <span>Missions</span>
+                </button>
+
+                <button
+                    class="nav-button"
+                    data-page="awards"
+                    onclick="showPage('awards')"
+                >
+                    <span class="nav-icon">🏆</span>
+                    <span>Awards</span>
+                </button>
+
+                <button
+                    class="nav-button"
+                    data-page="shop"
+                    onclick="showPage('shop')"
+                >
+                    <span class="nav-icon">🛒</span>
+                    <span>Shop</span>
+                </button>
+
+                <button
+                    class="nav-button"
+                    data-page="profile"
+                    onclick="showPage('profile')"
+                >
+                    <span class="nav-icon">👤</span>
+                    <span>Profile</span>
+                </button>
+
+            </nav>
         `;
     },
 
@@ -343,20 +423,55 @@ const JosJisComponents = {
         }
 
         container.innerHTML = `
+
             <div class="container">
 
                 ${this.header()}
-                ${this.score()}
-                ${this.character()}
-                ${this.upgradeShop()}
-                ${this.achievements()}
-                ${this.dailyRewards()}
-                ${this.reset()}
+
+                <!-- HOME PAGE -->
+                <section class="game-page active" id="page-home">
+
+                    ${this.score()}
+                    ${this.character()}
+
+                </section>
+
+                <!-- MISSIONS PAGE -->
+                <section class="game-page" id="page-missions" hidden>
+
+                    ${this.dailyRewards()}
+
+                </section>
+
+                <!-- AWARDS PAGE -->
+                <section class="game-page" id="page-awards" hidden>
+
+                    ${this.achievements()}
+
+                </section>
+
+                <!-- SHOP PAGE -->
+                <section class="game-page" id="page-shop" hidden>
+
+                    ${this.upgradeShop()}
+
+                </section>
+
+                <!-- PROFILE PAGE -->
+                <section class="game-page" id="page-profile" hidden>
+
+                    ${this.profile()}
+
+                </section>
+
                 ${this.footer()}
 
             </div>
 
+            ${this.navigation()}
+
             ${this.resetModal()}
+
         `;
     }
 };
