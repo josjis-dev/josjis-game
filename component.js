@@ -144,6 +144,97 @@ const JosJisComponents = {
         `;
     },
 
+    // ACHIEVEMENTS
+    achievements() {
+        return `
+            <div class="panel achievements">
+
+                <h2>🏆 Achievements</h2>
+
+                <p class="achievement-description">
+                    Complete challenges and unlock achievements!
+                </p>
+
+                <div class="achievement-list">
+
+                    <div class="achievement-item" id="achievementFirstClick">
+                        <div class="achievement-icon">👆</div>
+
+                        <div class="achievement-info">
+                            <div class="achievement-name">
+                                First Click
+                            </div>
+
+                            <div class="achievement-desc">
+                                Make your first click.
+                            </div>
+
+                            <div class="achievement-status" id="firstClickStatus">
+                                Not unlocked
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="achievement-item" id="achievementCoinCollector">
+                        <div class="achievement-icon">🪙</div>
+
+                        <div class="achievement-info">
+                            <div class="achievement-name">
+                                Coin Collector
+                            </div>
+
+                            <div class="achievement-desc">
+                                Collect 1,000 coins.
+                            </div>
+
+                            <div class="achievement-status" id="coinCollectorStatus">
+                                Not unlocked
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="achievement-item" id="achievementClickMaster">
+                        <div class="achievement-icon">🔥</div>
+
+                        <div class="achievement-info">
+                            <div class="achievement-name">
+                                Click Master
+                            </div>
+
+                            <div class="achievement-desc">
+                                Reach 1,000 total clicks.
+                            </div>
+
+                            <div class="achievement-status" id="clickMasterStatus">
+                                Not unlocked
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="achievement-item" id="achievementUpgradeMaster">
+                        <div class="achievement-icon">⚡</div>
+
+                        <div class="achievement-info">
+                            <div class="achievement-name">
+                                Upgrade Master
+                            </div>
+
+                            <div class="achievement-desc">
+                                Reach level 10 in any upgrade.
+                            </div>
+
+                            <div class="achievement-status" id="upgradeMasterStatus">
+                                Not unlocked
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+    },
+
     // DAILY REWARDS
     dailyRewards() {
         return `
@@ -258,6 +349,7 @@ const JosJisComponents = {
                 ${this.score()}
                 ${this.character()}
                 ${this.upgradeShop()}
+                ${this.achievements()}
                 ${this.dailyRewards()}
                 ${this.reset()}
                 ${this.footer()}
