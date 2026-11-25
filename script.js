@@ -1,8 +1,8 @@
 
-// =====================================
-// JOSJIS CLICKER GAME
-// JavaScript
-// =====================================
+/* =====================================
+   JOSJIS CLICKER GAME
+   JavaScript
+===================================== */
 
 // Default game data
 const defaultData = {
@@ -12,11 +12,55 @@ const defaultData = {
     powerLevel: 0,
     autoLevel: 0,
     lastDaily: "",
-    streak: 0
+    streak: 0,
+
+    // Total coins earned during gameplay
+    totalEarned: 0,
+
+    // Achievement progress
+    achievements: {
+        firstClick: false,
+        coinCollector: false,
+        clickMaster: false,
+        upgradeMaster: false
+    }
 };
 
 // LocalStorage key
 const STORAGE_KEY = "josjis_clicker_v2";
+
+// Achievement definitions
+const achievementDefinitions = [
+    {
+        id: "firstClick",
+        element: "achievementFirstClick",
+        status: "firstClickStatus",
+        requirement: () => game.clicks >= 1,
+        reward: 50
+    },
+    {
+        id: "coinCollector",
+        element: "achievementCoinCollector",
+        status: "coinCollectorStatus",
+        requirement: () => game.totalEarned >= 1000,
+        reward: 100
+    },
+    {
+        id: "clickMaster",
+        element: "achievementClickMaster",
+        status: "clickMasterStatus",
+        requirement: () => game.clicks >= 1000,
+        reward: 250
+    },
+    {
+        id: "upgradeMaster",
+        element: "achievementUpgradeMaster",
+        status: "upgradeMasterStatus",
+        requirement: () =>
+            game.powerLevel >= 10 || game.autoLevel >= 10,
+        reward: 500
+    }
+];
 
 // Load saved game
 let game = loadGame();
@@ -30,16 +74,27 @@ function loadGame() {
         const saved = localStorage.getItem(STORAGE_KEY);
 
         if (saved) {
+            const data = JSON.parse(saved);
+
             return {
                 ...defaultData,
-                ...JSON.parse(saved)
+                ...data,
+
+                achievements: {
+                    ...defaultData.achievements,
+                    ...(data.achievements || {})
+                }
             };
         }
+
     } catch (error) {
         console.error("Failed to load game:", error);
     }
 
-    return { ...defaultData };
+    return {
+        ...defaultData,
+        achievements: { ...defaultData.achievements }
+    };
 }
 
 function saveGame() {
@@ -51,6 +106,7 @@ function saveGame() {
 // =====================================
 
 function updateDisplay() {
+
     document.getElementById("coins").textContent =
         Math.floor(game.coins).toLocaleString();
 
@@ -101,6 +157,86 @@ function updateDisplay() {
         dailyButton.disabled = false;
         dailyButton.textContent = "Claim Daily Reward";
     }
+
+    // Achievement display
+    updateAchievementDisplay();
+}
+
+// =====================================
+// ACHIEVEMENT SYSTEM
+// =====================================
+
+function checkAchievements() {
+
+    let unlockedAny = false;
+
+    achievementDefinitions.forEach(function(achievement) {
+
+        // Skip already unlocked achievements
+        if (game.achievements[achievement.id]) {
+            return;
+        }
+
+        // Check requirement
+        if (achievement.requirement()) {
+
+            // Mark as unlocked
+            game.achievements[achievement.id] = true;
+
+            // Give virtual game coin reward
+            game.coins += achievement.reward;
+
+            // Update best coins
+            if (game.coins > game.best) {
+                game.best = game.coins;
+            }
+
+            unlockedAny = true;
+
+            console.log(
+                "Achievement unlocked:",
+                achievement.id
+            );
+        }
+    });
+
+    if (unlockedAny) {
+        document.getElementById("clickMessage").textContent =
+            "🏆 Achievement unlocked! Bonus coins received!";
+    }
+
+    return unlockedAny;
+}
+
+// =====================================
+// ACHIEVEMENT DISPLAY
+// =====================================
+
+function updateAchievementDisplay() {
+
+    achievementDefinitions.forEach(function(achievement) {
+
+        const item = document.getElementById(achievement.element);
+        const status = document.getElementById(achievement.status);
+
+        if (!item || !status) return;
+
+        if (game.achievements[achievement.id]) {
+
+            item.classList.add("unlocked");
+
+            status.textContent =
+                "✓ UNLOCKED • +" +
+                achievement.reward.toLocaleString() +
+                " Coins";
+
+        } else {
+
+            item.classList.remove("unlocked");
+
+            status.textContent = "🔒 Not unlocked";
+        }
+    });
 }
 
 // =====================================
@@ -120,9 +256,11 @@ function getAutoCost() {
 // =====================================
 
 document.getElementById("character").addEventListener("click", function(event) {
+
     const earned = 1 + game.powerLevel;
 
     game.coins += earned;
+    game.totalEarned += earned;
     game.clicks++;
 
     if (game.coins > game.best) {
@@ -131,11 +269,16 @@ document.getElementById("character").addEventListener("click", function(event) {
 
     showFloatingCoins(event, earned);
 
+    checkAchievements();
+
     saveGame();
     updateDisplay();
 
     document.getElementById("clickMessage").textContent =
-        "+" + earned + " Coins!";
+        game.achievements.firstClick &&
+        game.clicks === 1
+            ? "🏆 First Click unlocked!"
+            : "+" + earned + " Coins!";
 });
 
 // =====================================
@@ -143,6 +286,7 @@ document.getElementById("character").addEventListener("click", function(event) {
 // =====================================
 
 function showFloatingCoins(event, earned) {
+
     const area = document.querySelector(".character-area");
 
     if (!area) return;
@@ -157,6 +301,7 @@ function showFloatingCoins(event, earned) {
     let y = event.clientY - rect.top;
 
     if (!event.clientX && !event.clientY) {
+
         const characterRect =
             document.getElementById("character").getBoundingClientRect();
 
@@ -179,12 +324,15 @@ function showFloatingCoins(event, earned) {
 // =====================================
 
 function buyPower() {
+
     const cost = getPowerCost();
 
     if (game.coins < cost) return;
 
     game.coins -= cost;
     game.powerLevel++;
+
+    checkAchievements();
 
     saveGame();
     updateDisplay();
@@ -195,12 +343,15 @@ function buyPower() {
 // =====================================
 
 function buyAuto() {
+
     const cost = getAutoCost();
 
     if (game.coins < cost) return;
 
     game.coins -= cost;
     game.autoLevel++;
+
+    checkAchievements();
 
     saveGame();
     updateDisplay();
@@ -211,16 +362,22 @@ function buyAuto() {
 // =====================================
 
 setInterval(function() {
+
     if (game.autoLevel > 0) {
+
         game.coins += game.autoLevel;
+        game.totalEarned += game.autoLevel;
 
         if (game.coins > game.best) {
             game.best = game.coins;
         }
 
+        checkAchievements();
+
         saveGame();
         updateDisplay();
     }
+
 }, 1000);
 
 // =====================================
@@ -228,6 +385,7 @@ setInterval(function() {
 // =====================================
 
 function getToday() {
+
     const now = new Date();
 
     const year = now.getFullYear();
@@ -238,6 +396,7 @@ function getToday() {
 }
 
 function getYesterday() {
+
     const date = new Date();
 
     date.setDate(date.getDate() - 1);
@@ -250,6 +409,7 @@ function getYesterday() {
 }
 
 function claimDaily() {
+
     const today = getToday();
 
     if (game.lastDaily === today) return;
@@ -263,11 +423,15 @@ function claimDaily() {
     const reward = 100 + (game.streak - 1) * 50;
 
     game.coins += reward;
+    game.totalEarned += reward;
+
     game.lastDaily = today;
 
     if (game.coins > game.best) {
         game.best = game.coins;
     }
+
+    checkAchievements();
 
     document.getElementById("dailyMessage").textContent =
         "You received +" + reward.toLocaleString() + " Coins!";
@@ -292,7 +456,11 @@ function closeResetModal() {
 
 // Confirm reset
 function confirmResetGame() {
-    game = { ...defaultData };
+
+    game = {
+        ...defaultData,
+        achievements: { ...defaultData.achievements }
+    };
 
     saveGame();
     updateDisplay();
@@ -307,4 +475,6 @@ function confirmResetGame() {
 // INITIALIZE GAME
 // =====================================
 
+checkAchievements();
+saveGame();
 updateDisplay();
